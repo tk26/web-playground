@@ -121,6 +121,11 @@ const doc: WithContext<Book> = {
   author : authors
 };
 console.log(JSON.stringify(doc))
+
+window.TileDocument.create(window.ceramic, doc).then((res: any) =>
+console.log(res.commitId.toString())
+)
+
 })
 
 
@@ -131,27 +136,27 @@ document.getElementById('register-pid')?.addEventListener('click', async () => {
   console.log(ens_domain)
   console.log(identifyer)
 
-
-  web3Modal.clearCachedProvider();
-  const externalProvider = await web3Modal.connect();
+  //web3Modal.clearCachedProvider();
+  await window.ethereum.enable();
+  //const externalProvider = await web3Modal.connect();
+  const externalProvider = window.ethereum;
+  console.log(externalProvider)
   const myProvider = new ethers.providers.Web3Provider(externalProvider);
-
-  // console.log(ethProvider)
+  console.log(myProvider)
   //const myprovider = await connectWeb3()
   // const myprovider = ethProvider
   //console.log(myprovider)
   const ensAddress = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
-  const ens = new ENS({ myProvider, ensAddress })
+  const ens = new ENS({provider : myProvider, ensAddress : ensAddress})
   const ENSName = ens.name(ens_domain)
   // create subdomain
   const subdomain_tx = await ENSName.createSubdomain(identifyer)
 
 
-  const ens_sub = new ENS({ myProvider, ensAddress })
+  //const ens_sub = new ENS({ myProvider, ensAddress })
 
-  const ENSSubName = ens_sub.name(identifyer + '.' + ens_domain)
-  const ipfs_cid = 'QmWfVY9y3xjsixTgbd9AorQxH7VtMpzfx2HaWtsoUYecaX'
-  const ipfs_path = `ipfs://${ipfs_cid}`
+  const ENSSubName = ens.name(identifyer + '.' + ens_domain)
+  const ipfs_path = `ipfs://${cid}`
   const ctx_tx = await ENSSubName.setContenthash(ipfs_path)
   await ctx_tx.wait()
   const url_tx = await ENSSubName.setText('url', 'http:/openpid/' + identifyer + '.' + ens_domain)
