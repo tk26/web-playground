@@ -4,8 +4,8 @@ import KeyDidResolver from 'key-did-resolver'
 
 import { createCeramic } from './ceramic'
 import { createIDX } from './idx'
-import {registerOnENS} from './ens' 
-import { getProvider, web3Modal } from './wallet'
+// import {registerOnENS} from './ens' 
+import { getProvider, web3Modal, connectWeb3} from './wallet'
 import type { ResolverRegistry } from 'did-resolver'
 import { NFTStorage } from 'nft.storage'
 import ENS from '@ensdomains/ensjs'
@@ -37,7 +37,8 @@ const ceramicPromise = createCeramic()
 
 
 const authenticate = async (): Promise<string> => {
-  ethProvider = await web3Modal.connect()
+  ethProvider = await connectWeb3()
+  console.log(ethProvider)
   const [ceramic, provider] = await Promise.all([ceramicPromise, getProvider()])
   const keyDidResolver = KeyDidResolver.getResolver()
   const threeIdResolver = ThreeIdResolver.getResolver(ceramic)
@@ -54,6 +55,8 @@ const authenticate = async (): Promise<string> => {
   const idx = createIDX(ceramic)
   window.did = ceramic.did
   return idx.id
+  // let string_var: any = 'hallo'
+  // return new Promise(()=>{string_var})
 }
 
 document.getElementById('bauth')?.addEventListener('click', () => {
@@ -130,10 +133,13 @@ document.getElementById('register-pid')?.addEventListener('click', async () => {
   console.log(ens_domain)
   console.log(identifyer)
   // console.log(ethProvider)
-  const myprovider = await web3Modal.connect()
+  // const myprovider = await connectWeb3()
+  const myprovider = ethProvider
   console.log(myprovider)
   const ensAddress = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
   const ens = new ENS({ myprovider, ensAddress })
+
+  console.log(ens)
   const ENSName = ens.name(ens_domain)
   const subdomain_tx = await ENSName.createSubdomain(identifyer)
 })

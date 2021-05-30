@@ -23,6 +23,7 @@
     "@ceramicstudio/idx": "^0.11.0",
     "@ceramicstudio/idx-tools": "^0.10.0",
     "@ensdomains/ensjs": "^2.0.1",
+    "@portis/web3": "^4.0.0",
     "@walletconnect/web3-provider": "^1.4.1",
     "authereum": "^0.1.14",
     "dag-jose": "^0.3.0",
