@@ -64,10 +64,12 @@
 
     <div class="small-container">
 
-      <section>
-    <h2>Create PID</h2>
 
-      <p>Lorem ipsum</p>
+
+      <section>
+        <h2>Create PID</h2>
+
+          <p>Lorem ipsum</p>
       </section>
 
     <form id="create-pid">
@@ -82,13 +84,24 @@
       <input type="text" id="myCid">
     </section>
 
+      <section>
+        <span class="number">2</span>
+        <h3>Select your domain</h3>
+        <label for="myDomain" class="hidden">Use ENS Domain: </label>
+        <input type="text" id="myDomain">
+
+      </section>
+
     <section>
+<<<<<<< HEAD
       <span class="number">2</span>
       <h3>ENS Domain</h3>
       <input id="ens-domain" name="ens-domain" type="text" />
     </section>
 
     <section>
+=======
+>>>>>>> protomaster
       <span class="number">3</span>
       <h3>Create metadata</h3>
     <label for="publicationType" class="hidden">Select type:</label>
@@ -100,6 +113,10 @@
       <option value="medicalStudy">Medical Study</option>
     </select>
 
+<<<<<<< HEAD
+=======
+      <h4>Authors</h4>
+>>>>>>> protomaster
     <label for="authors" class="hidden">Authors:</label>
     <div class="container1">
       <div id="author" name="author">
@@ -112,6 +129,7 @@
       <button class="add_form_field">Add New &nbsp; <span style="font-size:16px; font-weight:bold;">+ </span></button>
     </div>
 
+<<<<<<< HEAD
     <label for="myDescription">Description:</label>
     <textarea name="myDescription" id="myDescription"></textarea>
 
@@ -120,14 +138,33 @@
       <span class="number">4</span>
       <h3>Register PID</h3>
     <label for="myPid">Create a PID:</label>
+=======
+      <h4>Description</h4>
+    <label for="myDescription" class="hidden">Description:</label>
+    <textarea name="myDescription" id="myDescription"></textarea>
+
+    <label for="myPid">Choose a PID:</label>
+>>>>>>> protomaster
     <input title="Ideally a unique short identifier" type="text" id="myPid">
     <button id="publish" class="magenta" type="button" class="btn btn-success">Register PID</button>
     </section>
 
     <section>
+<<<<<<< HEAD
       <span class="number">5</span>
       <h3>Publish metadata</h3>
     <button id="publish" class="magenta" type="button" class="btn btn-success">Publish</button>
+=======
+      <span class="number">4</span>
+      <h3>Register PID</h3>
+    </section>
+
+    <section>
+      <span class="number">5</span>
+      <h3>Publish metadata</h3>
+
+      <button id="publish"  type="button" class="btn btn-success">Publish</button>
+>>>>>>> protomaster
 
     </section>
   </form>
