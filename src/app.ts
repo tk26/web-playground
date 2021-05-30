@@ -116,7 +116,7 @@ document.getElementById('publish')?.addEventListener('click', () => {
   console.log("type", type);
 
   const identifyer = type + '1000'
-  const ens_domain = (<HTMLInputElement>document.getElementById('myDomain'))?.value
+  const ens_domain = (<HTMLInputElement>document.getElementById('ens-domain'))?.value
   console.log(ens_domain)
   registerOnENS(ens_domain, identifyer).then(
     ()=>{console.log("worked")}
