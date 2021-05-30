@@ -203,3 +203,38 @@ document.getElementById('search-pid-button')?.addEventListener('click', () => {
 //       const newDoc = await doc.update(content)
 //     }
 //   })
+
+function getRandomInt2String(max: number) {
+  const digits = max.toString().length
+  const number = Math.floor(Math.random() * max).toString()
+  return '0'.repeat(digits - number.length) + number
+}
+
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+document.getElementById('register-pid')?.addEventListener('click', async () => {
+  const type = (<HTMLInputElement>document.getElementById('publicationType'))?.value
+  const identifyer = type + getRandomInt2String(10000)
+  const ens_domain = (<HTMLInputElement>document.getElementById('myDomain'))?.value
+  console.log(ens_domain)
+  console.log(identifyer)
+  // console.log(ethProvider)
+  const myprovider = await connectWeb3()
+  // const myprovider = ethProvider
+  console.log(myprovider)
+  const ensAddress = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
+  const ens = new ENS({ myprovider, ensAddress })
+  const ENSName = ens.name(ens_domain)
+  // create subdomain
+  const subdomain_tx = await ENSName.createSubdomain(identifyer)
+  const ens_sub = new ENS({ myprovider, ensAddress })
+
+  const ENSSubName = ens_sub.name(identifyer + '.' + ens_domain)
+  const ipfs_cid = 'QmWfVY9y3xjsixTgbd9AorQxH7VtMpzfx2HaWtsoUYecaX'
+  const ipfs_path = `ipfs://${ipfs_cid}`
+  const ctx_tx = await ENSSubName.setContenthash(ipfs_path)
+  await ctx_tx.wait()
+  const url_tx = await ENSSubName.setText('url', 'http:/openpid/' + identifyer + '.' + ens_domain)
+  await url_tx.wait()
+  console.log('url_tx')
+  console.log(url_tx)
+})
