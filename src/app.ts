@@ -23,6 +23,7 @@ interface Author {
 
 // global variables to be hydrated and published
 let cid = '' // document.getElementById("myCid").value
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const publicationType = '' // document.getElementById("publicationType").value
 
 // Replace the hardcoded value, does not work with env yet
@@ -32,6 +33,15 @@ const nftStorageApiKey =
 const nftStorageClient = new NFTStorage({ token: nftStorageApiKey })
 
 const ceramicPromise = createCeramic()
+
+const jsonLDTextarea = <HTMLInputElement>document.getElementById('jsonLd');
+
+if (jsonLDTextarea) {
+  jsonLDTextarea.value = JSON.stringify({
+    firstName: 'Albert',
+    lastName: 'Einstein',
+  })
+}
 
 const authenticate = async (): Promise<string> => {
   const [ceramic, provider] = await Promise.all([ceramicPromise, getProvider()])
@@ -55,6 +65,8 @@ const authenticate = async (): Promise<string> => {
 document.getElementById('bauth')?.addEventListener('click', () => {
   authenticate().then(
     (id) => {
+      // @ts-ignore
+      document.querySelector('header button').innerHTML = '...' + id.substr(id.length - 4)
       console.log('Connected with DID:', id)
     },
     (err) => {
@@ -111,7 +123,56 @@ document.getElementById('publish')?.addEventListener('click', () => {
   const type = (<HTMLInputElement>document.getElementById('publicationType'))?.value
   console.log('type', type)
   // TODO build JSON-LD based on the schema of the selected type
-
-
-
 })
+
+// function registerOnENS async (ens_domain: string, identifyer: string) {
+//         const ethProvider = await web3Modal.connect()
+//         const ens = new ENS({ethProvider, ensAddress: getEnsAddress('1')})
+//         const ENSName = ens.name(ens_domain)
+//         const subdomain_tx = await ENSName.createSubdomain(identifyer)
+//
+//         return true;
+//     }
+
+// store is the buttonId
+document.getElementById('store-ceramic')?.addEventListener('click', () => {
+  // Replace { hello: 'world' } with JSON-LD content
+
+  const jsonLDData: string = jsonLDTextarea.value
+
+  window.TileDocument.create(window.ceramic, JSON.parse(jsonLDData)).then((res: any) => {
+    console.log(res.commitId.toString())
+    const span = <HTMLInputElement>document.getElementById('display-cermamic-pid')
+
+    span.value = res.commitId.toString()
+  })
+})
+
+document.getElementById('search-pid-button')?.addEventListener('click', () => {
+  const pid = (<HTMLInputElement>document.getElementById('pid-input'))?.value
+  console.log(pid)
+
+  //window.ceramic?.loadStream(pid).then((_content) => console.log(_content))
+  window.ceramic
+    ?.loadStream(pid)
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    .then((_content) => {
+      const resultContainer = <HTMLInputElement>document.getElementById('explore-pid-result')
+      console.log(_content)
+      resultContainer.value = _content.state.content
+      //  document.getElementById('update')!.value = _content.state.content
+    })
+})
+
+// THIS DOESN'T WORK YET
+//   document.getElementById('update')?.addEventListener('click', () => {
+//
+//     async () => {
+//       const pid = (<HTMLInputElement>document.getElementById('pid'))?.value
+//       const content = (<HTMLTextAreaElement>document.getElementById('oldContent'))?.value
+//
+//       const doc = await window.ceramic?.loadStream(pid)
+//
+//       const newDoc = await doc.update(content)
+//     }
+//   })

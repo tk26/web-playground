@@ -3,12 +3,27 @@ input {
   padding: .25rem .4rem;
   -webkit-appearance: none;
   border: 1px solid black;
+
+  &[type='file'] {
+    margin-top: 1.5rem;
+  }
 }
 
 textarea {
 
+  margin: 3rem 0;
   width: 100%;
   min-height: 400px;
+  -webkit-appearance: none;
+  border: 1px solid black;
+  padding: .75rem;
+}
+
+select {
+  -webkit-appearance: none;
+  border: 1px solid black;
+  padding: .25rem .75rem;
+  margin: 1.5rem 0;
 }
 
 form section {
