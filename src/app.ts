@@ -5,9 +5,10 @@ import KeyDidResolver from 'key-did-resolver'
 import { createCeramic } from './ceramic'
 import { createIDX } from './idx'
 import {registerOnENS} from './ens' 
-import { getProvider } from './wallet'
+import { getProvider, web3Modal } from './wallet'
 import type { ResolverRegistry } from 'did-resolver'
 import { NFTStorage } from 'nft.storage'
+import ENS from '@ensdomains/ensjs'
 
 declare global {
   interface Window {
@@ -24,6 +25,7 @@ interface Author {
 // global variables to be hydrated and published
 let cid = '' // document.getElementById("myCid").value
 const publicationType = '' // document.getElementById("publicationType").value
+let ethProvider: any = null
 
 // Replace the hardcoded value, does not work with env yet
 const nftStorageApiKey =
@@ -33,7 +35,9 @@ const nftStorageClient = new NFTStorage({ token: nftStorageApiKey })
 
 const ceramicPromise = createCeramic()
 
+
 const authenticate = async (): Promise<string> => {
+  ethProvider = await web3Modal.connect()
   const [ceramic, provider] = await Promise.all([ceramicPromise, getProvider()])
   const keyDidResolver = KeyDidResolver.getResolver()
   const threeIdResolver = ThreeIdResolver.getResolver(ceramic)
@@ -78,10 +82,6 @@ document.getElementById('upload')?.addEventListener('click', () => {
 })
 
 document.getElementById('publish')?.addEventListener('click', () => {
-  if (cid === '') {
-    cid = (<HTMLInputElement>document.getElementById('myCid'))?.value
-  }
-  console.log('cid', cid)
 
   const authors: any = []
   // loop through author inputs and build the authors array
@@ -115,16 +115,25 @@ document.getElementById('publish')?.addEventListener('click', () => {
 })
 
 
+function getRandomInt2String(max: number) {
+  const digits = max.toString().length
+  const number = Math.floor(Math.random() * max).toString()
+  return '0'.repeat(digits-number.length) + number
+}
 
-// document.getElementById('publish')?.addEventListener('click', () => {
-//   if (cid === '') {
+// function getIdentifyer
 
-// const type = (<HTMLInputElement>document.getElementById('publicationType'))?.value
-//   console.log("type", type);
-
-//   const identifyer = type + '1000'
-//   const ens_domain = (<HTMLInputElement>document.getElementById('ens-domain'))?.value
-//   console.log(ens_domain)
-//   registerOnENS(ens_domain, identifyer).then(
-//     ()=>{console.log("worked")}
-//     ).catch((err)=>{console.log(err)})
+document.getElementById('register-pid')?.addEventListener('click', async () => {
+  const type = (<HTMLInputElement>document.getElementById('publicationType'))?.value
+  const identifyer = type + getRandomInt2String(10000)
+  const ens_domain = (<HTMLInputElement>document.getElementById('myDomain'))?.value
+  console.log(ens_domain)
+  console.log(identifyer)
+  // console.log(ethProvider)
+  const myprovider = await web3Modal.connect()
+  console.log(myprovider)
+  const ensAddress = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
+  const ens = new ENS({ myprovider, ensAddress })
+  const ENSName = ens.name(ens_domain)
+  const subdomain_tx = await ENSName.createSubdomain(identifyer)
+})
