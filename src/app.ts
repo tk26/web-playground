@@ -34,13 +34,36 @@ const nftStorageClient = new NFTStorage({ token: nftStorageApiKey })
 
 const ceramicPromise = createCeramic()
 
-const jsonLDTextarea = <HTMLInputElement>document.getElementById('jsonLd');
+const jsonLDTextarea = <HTMLInputElement>document.getElementById('jsonLd')
 
 if (jsonLDTextarea) {
-  jsonLDTextarea.value = JSON.stringify({
-    firstName: 'Albert',
-    lastName: 'Einstein',
-  })
+  jsonLDTextarea.textContent = JSON.stringify(
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Book',
+      bookFormat: 'EBook',
+      copyrightHolder: {
+        '@type': 'Organization',
+        name: 'OHDSI',
+      },
+      copyrightYear: '2021',
+      license: 'https://creativecommons.org/publicdomain/zero/1.0',
+      description:
+        'This is a book about the Observational Health Data Sciences and Informatics (OHDSI) collaborative. The OHDSI community wrote the book to serve as a central knowledge repository for all things OHDSI. The Book is a living document, community-maintained through open-source development tools, and evolves continuously. The online version, available for free at http://book.ohdsi.org, always represents the latest version. A physical copy of the book is available from Amazon at cost price.',
+      genre: 'Educational Materials',
+      inLanguage: 'en',
+      isFamilyFriendly: 'true',
+      isbn: '9781088855195',
+      name: 'The Book of OHDSI',
+      publisher: {
+        '@type': 'Organization',
+        name: 'OHDSI',
+      },
+      url: 'https://ohdsi.github.io/TheBookOfOhdsi/',
+    },
+    undefined,
+    2
+  )
 }
 
 const authenticate = async (): Promise<string> => {
@@ -138,14 +161,18 @@ document.getElementById('publish')?.addEventListener('click', () => {
 document.getElementById('store-ceramic')?.addEventListener('click', () => {
   // Replace { hello: 'world' } with JSON-LD content
 
-  const jsonLDData: string = jsonLDTextarea.value
+  const jsonLDData: string | null = jsonLDTextarea.textContent
 
-  window.TileDocument.create(window.ceramic, JSON.parse(jsonLDData)).then((res: any) => {
-    console.log(res.commitId.toString())
-    const span = <HTMLInputElement>document.getElementById('display-cermamic-pid')
+  console.log(jsonLDData)
 
-    span.value = res.commitId.toString()
-  })
+  if (typeof jsonLDData === 'string') {
+    window.TileDocument.create(window.ceramic, JSON.parse(jsonLDData)).then((res: any) => {
+      console.log(res.commitId.toString())
+      const span = <HTMLInputElement>document.getElementById('display-cermamic-pid')
+
+      span.value = res.commitId.toString()
+    })
+  }
 })
 
 document.getElementById('search-pid-button')?.addEventListener('click', () => {
