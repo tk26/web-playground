@@ -2,6 +2,7 @@ import { DID } from 'dids'
 import ThreeIdResolver from '@ceramicnetwork/3id-did-resolver'
 import KeyDidResolver from 'key-did-resolver'
 
+import {ethers} from 'ethers'
 import { createCeramic } from './ceramic'
 import { createIDX } from './idx'
 // import {registerOnENS} from './ens' 
@@ -133,13 +134,24 @@ document.getElementById('register-pid')?.addEventListener('click', async () => {
   console.log(ens_domain)
   console.log(identifyer)
   // console.log(ethProvider)
-  // const myprovider = await connectWeb3()
-  const myprovider = ethProvider
+  const myprovider = await connectWeb3()
+  // const myprovider = ethProvider
   console.log(myprovider)
   const ensAddress = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
   const ens = new ENS({ myprovider, ensAddress })
-
-  console.log(ens)
   const ENSName = ens.name(ens_domain)
+  // create subdomain
   const subdomain_tx = await ENSName.createSubdomain(identifyer)
+  const ens_sub = new ENS({ myprovider, ensAddress })
+
+  const ENSSubName = ens_sub.name(identifyer + '.' + ens_domain)
+  const ipfs_cid = 'QmWfVY9y3xjsixTgbd9AorQxH7VtMpzfx2HaWtsoUYecaX'
+  const ipfs_path = `ipfs://${ipfs_cid}`
+  const ctx_tx = await ENSSubName.setContenthash(ipfs_path)
+  await ctx_tx.wait()
+  const url_tx = await ENSSubName.setText('url', 'http:/openpid/' + identifyer + '.' + ens_domain)
+  await url_tx.wait()
+  console.log('url_tx')
+  console.log(url_tx)
+
 })
