@@ -5,9 +5,10 @@ import KeyDidResolver from 'key-did-resolver'
 import { createCeramic } from './ceramic'
 import { createIDX } from './idx'
 import { getProvider, web3Modal} from './wallet'
+import {registerOnENS} from './ens' 
 import type { ResolverRegistry } from 'did-resolver'
 import { NFTStorage } from 'nft.storage'
-import ENS from '@ensdomains/ensjs'
+
 
 declare global {
   interface Window {
@@ -115,20 +116,21 @@ document.getElementById('publish')?.addEventListener('click', () => {
   const type = (<HTMLInputElement>document.getElementById('publicationType'))?.value
   console.log("type", type);
 
-  const identifyer = type + '1000'
-  const ens_domain = (<HTMLInputElement>document.getElementById('ens-domain'))?.value
-  console.log(ens_domain)
-  registerOnENS(ens_domain, identifyer).then(
-    ()=>{console.log("worked")}
-    ).catch((err)=>{console.log(err)})
   // TODO build JSON-LD based on the schema of the selected type
 })
 
 
-async function registerOnENS(ens_domain: string, identifyer: string){
-  const ethProvider = await web3Modal.connect()
-  const ensAddress = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
-  const ens = new ENS({ ethProvider, ensAddress })
-  const ENSName = ens.name(ens_domain)
-  const subdomain_tx = await ENSName.createSubdomain(identifyer)
-}
+
+
+// document.getElementById('publish')?.addEventListener('click', () => {
+//   if (cid === '') {
+
+// const type = (<HTMLInputElement>document.getElementById('publicationType'))?.value
+//   console.log("type", type);
+
+//   const identifyer = type + '1000'
+//   const ens_domain = (<HTMLInputElement>document.getElementById('ens-domain'))?.value
+//   console.log(ens_domain)
+//   registerOnENS(ens_domain, identifyer).then(
+//     ()=>{console.log("worked")}
+//     ).catch((err)=>{console.log(err)})
