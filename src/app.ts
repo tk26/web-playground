@@ -7,7 +7,7 @@ import { createIDX } from './idx'
 import { getProvider, web3Modal} from './wallet'
 import type { ResolverRegistry } from 'did-resolver'
 import { NFTStorage } from 'nft.storage'
-import ENS, { getEnsAddress } from '@ensdomains/ensjs'
+import ENS from '@ensdomains/ensjs'
 
 declare global {
   interface Window {
@@ -127,7 +127,8 @@ document.getElementById('publish')?.addEventListener('click', () => {
 
 async function registerOnENS(ens_domain: string, identifyer: string){
   const ethProvider = await web3Modal.connect()
-  const ens = new ENS({ ethProvider, ensAddress: getEnsAddress('1') })
+  const ensAddress = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
+  const ens = new ENS({ ethProvider, ensAddress })
   const ENSName = ens.name(ens_domain)
   const subdomain_tx = await ENSName.createSubdomain(identifyer)
 }

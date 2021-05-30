@@ -36,6 +36,7 @@
     "web3modal": "^1.9.3"
   },
   "devDependencies": {
+    "ceramic": "^0.4.5",
     "cssnano": "^3.10.0",
     "did-jwt": "^5.4.1",
     "did-resolver": "^3.0.1",
