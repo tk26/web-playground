@@ -4,10 +4,11 @@ import KeyDidResolver from 'key-did-resolver'
 
 import { createCeramic } from './ceramic'
 import { createIDX } from './idx'
-import { getProvider } from './wallet'
+// import {registerOnENS} from './ens' 
+import { getProvider, web3Modal, connectWeb3} from './wallet'
 import type { ResolverRegistry } from 'did-resolver'
 import { NFTStorage } from 'nft.storage'
-// import ENS, { getEnsAddress } from '@ensdomains/ensjs'
+import ENS from '@ensdomains/ensjs'
 
 declare global {
   interface Window {
@@ -25,6 +26,7 @@ interface Author {
 let cid = '' // document.getElementById("myCid").value
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const publicationType = '' // document.getElementById("publicationType").value
+let ethProvider: any = null
 
 // Replace the hardcoded value, does not work with env yet
 const nftStorageApiKey =
@@ -33,6 +35,7 @@ const nftStorageApiKey =
 const nftStorageClient = new NFTStorage({ token: nftStorageApiKey })
 
 const ceramicPromise = createCeramic()
+
 
 const jsonLDTextarea = <HTMLInputElement>document.getElementById('jsonLd')
 
@@ -67,6 +70,8 @@ if (jsonLDTextarea) {
 }
 
 const authenticate = async (): Promise<string> => {
+  ethProvider = await connectWeb3()
+  console.log(ethProvider)
   const [ceramic, provider] = await Promise.all([ceramicPromise, getProvider()])
   const keyDidResolver = KeyDidResolver.getResolver()
   const threeIdResolver = ThreeIdResolver.getResolver(ceramic)
@@ -83,6 +88,8 @@ const authenticate = async (): Promise<string> => {
   const idx = createIDX(ceramic)
   window.did = ceramic.did
   return idx.id
+  // let string_var: any = 'hallo'
+  // return new Promise(()=>{string_var})
 }
 
 document.getElementById('bauth')?.addEventListener('click', () => {
@@ -113,10 +120,6 @@ document.getElementById('upload')?.addEventListener('click', () => {
 })
 
 document.getElementById('publish')?.addEventListener('click', () => {
-  if (cid === '') {
-    cid = (<HTMLInputElement>document.getElementById('myCid'))?.value
-  }
-  console.log('cid', cid)
 
   const authors: any = []
   // loop through author inputs and build the authors array
@@ -144,9 +147,11 @@ document.getElementById('publish')?.addEventListener('click', () => {
   console.log('pid', pid)
 
   const type = (<HTMLInputElement>document.getElementById('publicationType'))?.value
-  console.log('type', type)
+  console.log("type", type);
+
   // TODO build JSON-LD based on the schema of the selected type
 })
+
 
 // function registerOnENS async (ens_domain: string, identifyer: string) {
 //         const ethProvider = await web3Modal.connect()
@@ -204,13 +209,15 @@ document.getElementById('search-pid-button')?.addEventListener('click', () => {
 //     }
 //   })
 
+
 function getRandomInt2String(max: number) {
   const digits = max.toString().length
   const number = Math.floor(Math.random() * max).toString()
-  return '0'.repeat(digits - number.length) + number
+  return '0'.repeat(digits-number.length) + number
 }
 
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
+// function getIdentifyer
+
 document.getElementById('register-pid')?.addEventListener('click', async () => {
   const type = (<HTMLInputElement>document.getElementById('publicationType'))?.value
   const identifyer = type + getRandomInt2String(10000)
@@ -237,4 +244,5 @@ document.getElementById('register-pid')?.addEventListener('click', async () => {
   await url_tx.wait()
   console.log('url_tx')
   console.log(url_tx)
+
 })

@@ -12,6 +12,7 @@ declare global {
 
 export async function createCeramic(): Promise<CeramicApi> {
   const ceramic = new Ceramic('http://localhost:7007')
+ // const ceramic = new Ceramic('https://ceramic-clay.3boxlabs.com') //('http://localhost:7007')
   window.ceramic = ceramic
   window.TileDocument = TileDocument
   window.Caip10Link = Caip10Link
